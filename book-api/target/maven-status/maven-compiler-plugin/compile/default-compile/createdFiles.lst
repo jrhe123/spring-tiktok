@@ -1,0 +1,12 @@
+com/imooc/controller/PassportController.class
+com/imooc/InterceptorConfig.class
+com/imooc/controller/VlogController.class
+com/imooc/intercepter/PassportInterceptor.class
+com/imooc/Knife4jConfig.class
+com/imooc/controller/FileController.class
+com/imooc/intercepter/UserTokenInterceptor.class
+com/imooc/Application.class
+com/imooc/controller/HelloController.class
+com/imooc/MinIOConfig.class
+com/imooc/controller/UserInfoController.class
+com/imooc/controller/CommentController.class

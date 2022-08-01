@@ -1,0 +1,13 @@
+/workspaces/idea_imc/imooc-red-book-dev/book-api/src/main/java/com/imooc/controller/UserInfoController.java
+/workspaces/idea_imc/imooc-red-book-dev/book-api/src/main/java/com/imooc/controller/HelloController.java
+/workspaces/idea_imc/imooc-red-book-dev/book-api/src/main/java/com/imooc/controller/VlogController.java
+/workspaces/idea_imc/imooc-red-book-dev/book-api/src/main/java/com/imooc/Knife4jConfig.java
+/workspaces/idea_imc/imooc-red-book-dev/book-api/src/main/java/com/imooc/controller/BaseInfoProperties.java
+/workspaces/idea_imc/imooc-red-book-dev/book-api/src/main/java/com/imooc/controller/FileController.java
+/workspaces/idea_imc/imooc-red-book-dev/book-api/src/main/java/com/imooc/controller/BaseController.java
+/workspaces/idea_imc/imooc-red-book-dev/book-api/src/main/java/com/imooc/controller/PassportController.java
+/workspaces/idea_imc/imooc-red-book-dev/book-api/src/main/java/com/imooc/InterceptorConfig.java
+/workspaces/idea_imc/imooc-red-book-dev/book-api/src/main/java/com/imooc/MinIOConfig.java
+/workspaces/idea_imc/imooc-red-book-dev/book-api/src/main/java/com/imooc/intercepter/UserTokenInterceptor.java
+/workspaces/idea_imc/imooc-red-book-dev/book-api/src/main/java/com/imooc/intercepter/PassportInterceptor.java
+/workspaces/idea_imc/imooc-red-book-dev/book-api/src/main/java/com/imooc/Application.java

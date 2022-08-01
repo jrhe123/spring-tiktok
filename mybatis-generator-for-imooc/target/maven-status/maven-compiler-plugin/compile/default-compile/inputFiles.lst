@@ -1,0 +1,12 @@
+/workspaces/idea_imc/imooc-red-book-dev/mybatis-generator-for-imooc/src/main/java/com/imooc/my/mapper/mapper/MyMapper.java
+/workspaces/idea_imc/imooc-red-book-dev/mybatis-generator-for-imooc/src/main/java/com/imooc/pojo/Users.java
+/workspaces/idea_imc/imooc-red-book-dev/mybatis-generator-for-imooc/src/main/java/com/imooc/pojo/Comment.java
+/workspaces/idea_imc/imooc-red-book-dev/mybatis-generator-for-imooc/src/main/java/com/imooc/mybatis/utils/GeneratorDisplay.java
+/workspaces/idea_imc/imooc-red-book-dev/mybatis-generator-for-imooc/src/main/java/com/imooc/mapper/MyLikedVlogMapper.java
+/workspaces/idea_imc/imooc-red-book-dev/mybatis-generator-for-imooc/src/main/java/com/imooc/mapper/VlogMapper.java
+/workspaces/idea_imc/imooc-red-book-dev/mybatis-generator-for-imooc/src/main/java/com/imooc/mapper/UsersMapper.java
+/workspaces/idea_imc/imooc-red-book-dev/mybatis-generator-for-imooc/src/main/java/com/imooc/pojo/Vlog.java
+/workspaces/idea_imc/imooc-red-book-dev/mybatis-generator-for-imooc/src/main/java/com/imooc/pojo/MyLikedVlog.java
+/workspaces/idea_imc/imooc-red-book-dev/mybatis-generator-for-imooc/src/main/java/com/imooc/mapper/FansMapper.java
+/workspaces/idea_imc/imooc-red-book-dev/mybatis-generator-for-imooc/src/main/java/com/imooc/pojo/Fans.java
+/workspaces/idea_imc/imooc-red-book-dev/mybatis-generator-for-imooc/src/main/java/com/imooc/mapper/CommentMapper.java

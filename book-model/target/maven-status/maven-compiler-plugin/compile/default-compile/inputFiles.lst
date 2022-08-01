@@ -1,0 +1,16 @@
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/bo/RegistLoginBO.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/vo/CommentVO.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/pojo/Fans.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/pojo/MyLikedVlog.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/bo/VlogBO.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/vo/IndexVlogVO.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/model/Stu.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/bo/UpdatedUserBO.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/vo/UsersVO.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/vo/FansVO.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/mo/MessageMO.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/pojo/Vlog.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/vo/VlogerVO.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/pojo/Comment.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/bo/CommentBO.java
+/workspaces/idea_imc/imooc-red-book-dev/book-model/src/main/java/com/imooc/pojo/Users.java

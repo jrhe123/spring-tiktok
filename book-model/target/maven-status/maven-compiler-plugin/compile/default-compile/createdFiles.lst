@@ -1,0 +1,12 @@
+com/imooc/pojo/Vlog.class
+com/imooc/pojo/Comment.class
+com/imooc/vo/CommentVO.class
+com/imooc/bo/VlogBO.class
+com/imooc/vo/IndexVlogVO.class
+com/imooc/pojo/Fans.class
+com/imooc/bo/RegistLoginBO.class
+com/imooc/bo/UpdatedUserBO.class
+com/imooc/model/Stu.class
+com/imooc/pojo/Users.class
+com/imooc/vo/UsersVO.class
+com/imooc/pojo/MyLikedVlog.class
