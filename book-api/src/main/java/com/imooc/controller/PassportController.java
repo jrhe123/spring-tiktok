@@ -32,7 +32,7 @@ public class PassportController {
 		String code = (int)((Math.random() * 9 + 1) * 100000) + "";
 		// send sms
 		// smsUtils.sendSMS(form.getMobile(), code);
-		log.error("sms code" + code);
+		log.error("!! sms code: " + code);
 		// return
 		return GraceJSONResult.ok();
 	}

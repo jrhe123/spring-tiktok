@@ -13,3 +13,6 @@ book-common/src/main/resources/twilio.properties
 .settings
 .springBeans
 .sts4-cache
+
+**/.project/
+*/.project/**
