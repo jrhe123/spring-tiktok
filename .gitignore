@@ -1,8 +1,15 @@
 book-common/src/main/resources/twilio.properties
 
-book-api/target/*
-book-common/target/*
-book-mapper/target/*
-book-model/target/*
-book-service/target/*
-mybatis-generator-for-imooc/target/*
+/target/
+*/target/**
+**/META-INF/
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
