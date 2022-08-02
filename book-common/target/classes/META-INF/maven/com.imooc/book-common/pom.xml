@@ -33,6 +33,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
+        
+        <!-- twilio SMS -->
+        <dependency>
+        	<groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+           	<version>8.8.0</version>
+        </dependency> 
 
         <!-- 引入 redis 依赖 -->
         <dependency>
