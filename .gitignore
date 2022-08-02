@@ -1,1 +1,8 @@
 book-common/src/main/resources/twilio.properties
+
+book-api/target
+book-common/target
+book-mapper/target
+book-model/target
+book-service/target
+mybatis-generator-for-imooc/target

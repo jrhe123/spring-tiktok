@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PassportController {
 
 	@Autowired
-    private SMSUtils smsUtils;
+	private SMSUtils smsUtils;
 	
 	@PostMapping("getSMSCode")
 	public GraceJSONResult getSMSCode(
@@ -31,7 +31,8 @@ public class PassportController {
 		// generate random code
 		String code = (int)((Math.random() * 9 + 1) * 100000) + "";
 		// send sms
-		smsUtils.sendSMS(form.getMobile(), code);
+		// smsUtils.sendSMS(form.getMobile(), code);
+		log.error("sms code" + code);
 		// return
 		return GraceJSONResult.ok();
 	}

@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import com.imooc.exceptions.MyCustomException;
+import com.imooc.grace.result.ResponseStatusEnum;
 import com.twilio.Twilio;
+import com.twilio.exception.ApiException;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
@@ -14,6 +17,7 @@ import com.twilio.type.PhoneNumber;
 		value = "classpath:twilio.properties"
 		)
 public class SMSUtils {
+	
 	@Value( "${twilio.sid}" )
 	private String twilioSid;
 	
@@ -24,11 +28,16 @@ public class SMSUtils {
 	private String twilioNumber;
 	
 	public void sendSMS(String phone, String code) {
-		Twilio.init(twilioSid, twilioAuthToken);
-        Message.creator(new PhoneNumber(phone),
-                        new PhoneNumber(twilioNumber), 
-                        "Verification code: " + code
-                        ).create();
+		try {
+			Twilio.init(twilioSid, twilioAuthToken);
+	        Message.creator(
+	        		new PhoneNumber(phone),
+	                new PhoneNumber(twilioNumber), 
+	                "Verification code: " + code
+	                ).create();
+		} catch (ApiException e) {
+			throw new MyCustomException(ResponseStatusEnum.NO_AUTH);
+		}
 	}
 	
 
