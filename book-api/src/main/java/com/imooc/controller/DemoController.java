@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.imooc.grace.result.GraceJSONResult;
 import com.imooc.utils.SMSUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("demo")
 public class DemoController {
