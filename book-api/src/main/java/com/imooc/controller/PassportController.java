@@ -1,5 +1,6 @@
 package com.imooc.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.imooc.controller.form.GetSMSCodeForm;
 import com.imooc.grace.result.GraceJSONResult;
+import com.imooc.utils.IPUtil;
 import com.imooc.utils.SMSUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,13 +28,20 @@ public class PassportController {
 	
 	@PostMapping("getSMSCode")
 	public GraceJSONResult getSMSCode(
-			@RequestBody @Valid GetSMSCodeForm form
+			@RequestBody @Valid GetSMSCodeForm form,
+			HttpServletRequest request
 			) {
+		// get ip addr
+		String userIp = IPUtil.getRequestIp(request);
+		// TODO check redis (60sec)
+		
 		// generate random code
 		String code = (int)((Math.random() * 9 + 1) * 100000) + "";
 		// send sms
 		// smsUtils.sendSMS(form.getMobile(), code);
-		log.error("!! sms code: " + code);
+		log.info("!!!!!!!!! sms code: " + code);
+		// TODO save code into redis
+		
 		// return
 		return GraceJSONResult.ok();
 	}
