@@ -15,13 +15,15 @@ import com.imooc.grace.result.GraceJSONResult;
 import com.imooc.utils.IPUtil;
 import com.imooc.utils.SMSUtils;
 
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Api(tags = "Passport api")
 @RestController
 @Validated
 @RequestMapping("passport")
-public class PassportController {
+public class PassportController extends BaseController {
 
 	@Autowired
 	private SMSUtils smsUtils;
@@ -33,15 +35,16 @@ public class PassportController {
 			) {
 		// get ip addr
 		String userIp = IPUtil.getRequestIp(request);
-		// TODO check redis (60sec)
+		// sms in 60 sec
+		redis.setnx60s(MOBILE_SMSCODE + ":" + userIp, userIp);
 		
 		// generate random code
 		String code = (int)((Math.random() * 9 + 1) * 100000) + "";
 		// send sms
 		// smsUtils.sendSMS(form.getMobile(), code);
 		log.info("!!!!!!!!! sms code: " + code);
-		// TODO save code into redis
-		
+		// save code into redis, timeout 30 min
+		redis.set(MOBILE_SMSCODE + ":" + form.getMobile(), code, 30 * 60);
 		// return
 		return GraceJSONResult.ok();
 	}
