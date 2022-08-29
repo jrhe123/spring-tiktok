@@ -8,6 +8,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.imooc.controller.BaseInfoProperties;
+import com.imooc.exceptions.GraceException;
+import com.imooc.grace.result.ResponseStatusEnum;
 import com.imooc.utils.IPUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ public class PassportInterceptor extends BaseInfoProperties implements HandlerIn
 		boolean keyIsExist = redis.keyIsExist(MOBILE_SMSCODE + ":" + userIp);
 		
 		if (keyIsExist) {
+			GraceException.display(ResponseStatusEnum.SMS_NEED_WAIT_ERROR);
 			log.info("Cannot send sms twice in 60sec");
 			return false;
 		}
