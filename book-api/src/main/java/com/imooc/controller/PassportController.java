@@ -33,12 +33,8 @@ public class PassportController extends BaseInfoProperties {
 	@PostMapping("getSMSCode")
 	public GraceJSONResult getSMSCode(
 			@RequestBody @Valid GetSMSCodeForm form,
-			BindingResult bindingResult,
 			HttpServletRequest request
 			) {
-		if (bindingResult.hasErrors()) {
-			return GraceJSONResult.errorMap(getErrors(bindingResult));
-		}
 		// get ip addr
 		String userIp = IPUtil.getRequestIp(request);
 		// sms in 60 sec
@@ -58,12 +54,8 @@ public class PassportController extends BaseInfoProperties {
 	
 	@PostMapping("login")
 	public GraceJSONResult login(
-			@RequestBody @Valid RegisterLoginForm form,
-			BindingResult bindingResult
+			@RequestBody @Valid RegisterLoginForm form
 			){
-		if (bindingResult.hasErrors()) {
-			return GraceJSONResult.errorMap(getErrors(bindingResult));
-		}
 		return GraceJSONResult.ok();
 	}
 }

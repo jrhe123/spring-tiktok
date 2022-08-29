@@ -39,14 +39,15 @@ public class GraceExceptionHandler {
         return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_MAX_SIZE_2MB_ERROR);
     }
 
-    public Map<String, String> getErrors(BindingResult result) {
-        Map<String, String> map = new HashMap<>();
-        List<FieldError> errorList = result.getFieldErrors();
-        for (FieldError ff : errorList) {
-            String field = ff.getField();
-            String msg = ff.getDefaultMessage();
-            map.put(field, msg);
-        }
-        return map;
-    }
+    
+	public Map<String, String> getErrors(BindingResult result) {
+		Map<String, String> map = new HashMap<>();
+		List<FieldError> errorList = result.getFieldErrors();
+		for (FieldError fe : errorList) {
+			String field = fe.getField();
+			String msg = fe.getDefaultMessage();
+			map.put(field, msg);
+		}
+		return map;
+	}
 }
