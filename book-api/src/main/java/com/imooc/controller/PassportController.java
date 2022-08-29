@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.imooc.controller.form.GetSMSCodeForm;
+import com.imooc.controller.form.RegisterLoginForm;
 import com.imooc.grace.result.GraceJSONResult;
 import com.imooc.utils.IPUtil;
 import com.imooc.utils.SMSUtils;
@@ -23,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Validated
 @RequestMapping("passport")
-public class PassportController extends BaseController {
+public class PassportController extends BaseInfoProperties {
 
 	@Autowired
 	private SMSUtils smsUtils;
@@ -31,8 +33,12 @@ public class PassportController extends BaseController {
 	@PostMapping("getSMSCode")
 	public GraceJSONResult getSMSCode(
 			@RequestBody @Valid GetSMSCodeForm form,
+			BindingResult bindingResult,
 			HttpServletRequest request
 			) {
+		if (bindingResult.hasErrors()) {
+			return GraceJSONResult.errorMap(getErrors(bindingResult));
+		}
 		// get ip addr
 		String userIp = IPUtil.getRequestIp(request);
 		// sms in 60 sec
@@ -42,10 +48,22 @@ public class PassportController extends BaseController {
 		String code = (int)((Math.random() * 9 + 1) * 100000) + "";
 		// send sms
 		// smsUtils.sendSMS(form.getMobile(), code);
-		log.info("!!!!!!!!! sms code: " + code);
+		log.info("sms code: " + code);
 		// save code into redis, timeout 30 min
 		redis.set(MOBILE_SMSCODE + ":" + form.getMobile(), code, 30 * 60);
 		// return
+		return GraceJSONResult.ok();
+	}
+	
+	
+	@PostMapping("login")
+	public GraceJSONResult login(
+			@RequestBody @Valid RegisterLoginForm form,
+			BindingResult bindingResult
+			){
+		if (bindingResult.hasErrors()) {
+			return GraceJSONResult.errorMap(getErrors(bindingResult));
+		}
 		return GraceJSONResult.ok();
 	}
 }
