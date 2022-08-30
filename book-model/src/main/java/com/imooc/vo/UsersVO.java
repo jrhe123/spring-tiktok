@@ -30,4 +30,8 @@ public class UsersVO {
     private Date updatedTime;
     
     private String userToken;
+    
+    private Integer myFollowsCounts;
+    private Integer myFansCounts;
+    private Integer totalLikeMeCounts;
 }
