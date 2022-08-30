@@ -13,4 +13,9 @@ public interface UserService {
 	 * create user
 	 */
 	public Users createUser(String mobile);
+	
+	/*
+	 * search user by id
+	 */
+	public Users queryUserID(String userId);
 }
