@@ -29,3 +29,7 @@ docker start minio
 fix server datetime error:
 (minio The difference between the request time and the server's time is too large.)
 https://www.jianshu.com/p/6ccfffd4402f
+
+
+open file:
+cmd + shift + r

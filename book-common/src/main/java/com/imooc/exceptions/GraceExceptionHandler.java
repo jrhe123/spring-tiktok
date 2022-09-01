@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,6 +28,15 @@ public class GraceExceptionHandler {
     public GraceJSONResult returnMyException(MyCustomException e) {
         e.printStackTrace();
         return GraceJSONResult.exception(e.getResponseStatusEnum());
+    }
+    
+    
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseBody
+    public GraceJSONResult returnMissingServletRequestParameter(MissingServletRequestParameterException e) {
+    	Map<String, String> map = new HashMap<>();
+    	map.put(e.getParameterName(), e.getMessage());
+    	return GraceJSONResult.errorMap(map);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
