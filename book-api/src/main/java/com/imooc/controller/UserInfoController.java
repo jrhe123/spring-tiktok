@@ -1,5 +1,7 @@
 package com.imooc.controller;
 
+import java.io.IOException;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
@@ -7,15 +9,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.imooc.MinIOConfig;
 import com.imooc.bo.UpdatedUserBO;
 import com.imooc.controller.form.UpdateUserForm;
 import com.imooc.controller.form.UserInfoForm;
+import com.imooc.enums.FileTypeEnum;
 import com.imooc.enums.UserInfoModifyType;
+import com.imooc.exceptions.GraceException;
 import com.imooc.grace.result.GraceJSONResult;
+import com.imooc.grace.result.ResponseStatusEnum;
 import com.imooc.pojo.Users;
 import com.imooc.service.UserService;
+import com.imooc.utils.MinIOUtils;
 import com.imooc.vo.UsersVO;
 
 import io.swagger.annotations.Api;
@@ -30,6 +39,44 @@ public class UserInfoController extends BaseInfoProperties {
 	
 	@Autowired
     private UserService userService;
+	
+	@Autowired
+	private MinIOConfig minIOConfig;
+	
+	@PostMapping("modifyImage")
+	public GraceJSONResult modifyImage(
+			@RequestParam String userId,
+			@RequestParam Integer type,
+			@RequestParam(value = "file", required = true) MultipartFile file
+			) throws IOException, Exception {
+		
+		if (type != FileTypeEnum.FACE.type && type != FileTypeEnum.BGIMG.type) {
+			return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+		}
+		
+		String fileName = file.getOriginalFilename();
+		MinIOUtils.uploadFile(
+				minIOConfig.getBucketName(),
+				fileName,
+				file.getInputStream()
+				);
+		
+		String imageUrl = minIOConfig.getFileHost()
+						+ "/" + minIOConfig.getBucketName()
+						+ "/" + fileName;
+		
+		// update user
+		UpdatedUserBO userBO = new UpdatedUserBO();
+		userBO.setId(userId);
+		if (type == FileTypeEnum.FACE.type) {
+			userBO.setFace(imageUrl);
+		} else {
+			userBO.setBgImg(imageUrl);
+		}
+		Users user = userService.updateUserInfo(userBO);
+		
+		return GraceJSONResult.ok(user);
+	}
 	
 	@PostMapping("modifyUserInfo")
 	public GraceJSONResult modifyUserInfo(
