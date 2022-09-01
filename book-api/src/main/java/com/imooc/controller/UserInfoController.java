@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.imooc.bo.UpdatedUserBO;
+import com.imooc.controller.form.UpdateUserForm;
 import com.imooc.controller.form.UserInfoForm;
+import com.imooc.enums.UserInfoModifyType;
 import com.imooc.grace.result.GraceJSONResult;
 import com.imooc.pojo.Users;
 import com.imooc.service.UserService;
@@ -27,6 +30,19 @@ public class UserInfoController extends BaseInfoProperties {
 	
 	@Autowired
     private UserService userService;
+	
+	@PostMapping("modifyUserInfo")
+	public GraceJSONResult modifyUserInfo(
+			@RequestBody @Valid UpdateUserForm form
+			) {
+		UserInfoModifyType.checkUserInfoTypeIsRight(form.getType());
+		
+		UpdatedUserBO userBO = new UpdatedUserBO();
+		BeanUtils.copyProperties(form, userBO);
+		
+		Users user = userService.updateUserInfo(userBO, form.getType());
+		return GraceJSONResult.ok(user);
+	}
 	
 	@PostMapping("query")
 	public GraceJSONResult query(

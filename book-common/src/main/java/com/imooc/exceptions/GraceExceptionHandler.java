@@ -1,11 +1,13 @@
 package com.imooc.exceptions;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +19,8 @@ import com.imooc.grace.result.ResponseStatusEnum;
 
 @ControllerAdvice
 public class GraceExceptionHandler {
+	
+	public static final List<String> ANNOTATIONS = Arrays.asList("OneNotNull");
 
     @ExceptionHandler(MyCustomException.class)
     @ResponseBody
@@ -32,7 +36,7 @@ public class GraceExceptionHandler {
         Map<String, String> map = getErrors(result);
         return GraceJSONResult.errorMap(map);
     }
-
+        
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseBody
     public GraceJSONResult returnMaxUploadSize(MaxUploadSizeExceededException e) {
@@ -42,11 +46,22 @@ public class GraceExceptionHandler {
     
 	public Map<String, String> getErrors(BindingResult result) {
 		Map<String, String> map = new HashMap<>();
+		// field errors
 		List<FieldError> errorList = result.getFieldErrors();
 		for (FieldError fe : errorList) {
 			String field = fe.getField();
 			String msg = fe.getDefaultMessage();
 			map.put(field, msg);
+		}		
+		// object errors
+		List<ObjectError> list = result.getAllErrors();
+		for (ObjectError oe : list) {
+			String code = oe.getCode();
+			if (ANNOTATIONS.contains(code)) {
+				String field = "form";
+				String msg = oe.getDefaultMessage();
+				map.put(field, msg);
+			}
 		}
 		return map;
 	}

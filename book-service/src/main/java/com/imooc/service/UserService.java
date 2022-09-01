@@ -1,5 +1,6 @@
 package com.imooc.service;
 
+import com.imooc.bo.UpdatedUserBO;
 import com.imooc.pojo.Users;
 
 public interface UserService {
@@ -18,4 +19,14 @@ public interface UserService {
 	 * search user by id
 	 */
 	public Users queryUserID(String userId);
+	
+	/*
+	 * update user info
+	 */
+	public Users updateUserInfo(UpdatedUserBO userBO);
+	
+	/*
+	 * update user info v2
+	 */
+	public Users updateUserInfo(UpdatedUserBO userBO, Integer type);
 }
