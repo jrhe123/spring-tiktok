@@ -15,3 +15,13 @@ https://stackoverflow.com/questions/54638255/spring-boot-validation-one-from-two
 https://www.digitalocean.com/community/tutorials/spring-validation-example-mvc-validator
 
 https://blog.clairvoyantsoft.com/spring-boot-creating-a-custom-annotation-for-validation-edafbf9a97a4
+
+
+centos:
+root
+hejiarong
+
+minIO
+
+service docker start
+docker start minio

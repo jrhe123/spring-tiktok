@@ -30,10 +30,10 @@ spring:
 
 # MinIO 配置
 minio:
-  endpoint: http://192.168.1.61:9000      # MinIO服务地址
-  fileHost: http://192.168.1.61:9000      # 文件地址host
-  bucketName: imooc                      # 存储桶bucket名称
-  accessKey: imooc                         # 用户名
-  secretKey: imooc123456                     # 密码
+  endpoint: http://localhost:9000      # MinIO服务地址
+  fileHost: http://localhost:9000      # 文件地址host
+  bucketName: tiktok                      # 存储桶bucket名称
+  accessKey: root                         # 用户名
+  secretKey: abc123456                     # 密码
   imgSize: 1024                           # 图片大小限制，单位：m
   fileSize: 1024                          # 文件大小限制，单位：m
