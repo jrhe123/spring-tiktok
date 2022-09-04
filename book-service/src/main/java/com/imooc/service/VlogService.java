@@ -21,4 +21,11 @@ public interface VlogService {
 			Integer page,
 			Integer pageSizes
 			);
+	
+	/*
+	 * show vlog detail by id
+	 */
+	public IndexVlogVO getVlogDetailById(
+			String vlogId
+			);
 }

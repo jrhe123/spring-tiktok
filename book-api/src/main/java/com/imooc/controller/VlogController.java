@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.imooc.bo.VlogBO;
 import com.imooc.controller.form.PublishVlogForm;
+import com.imooc.controller.form.VlogDetailForm;
 import com.imooc.controller.form.VlogIndexListForm;
 import com.imooc.grace.result.GraceJSONResult;
 import com.imooc.service.VlogService;
@@ -58,5 +59,14 @@ public class VlogController extends BaseInfoProperties {
 				
 		PagedGridResult result = vlogService.getIndexVlogList(search, page, pageSize);
 		return GraceJSONResult.ok(result);
+	}
+	
+	@PostMapping("getVlogDetailById")
+	public GraceJSONResult getVlogDetailById(
+			@RequestBody @Valid VlogDetailForm form
+			) {
+				
+		IndexVlogVO vlogBO = vlogService.getVlogDetailById(form.getVlogId());
+		return GraceJSONResult.ok(vlogBO);
 	}
 }
