@@ -97,4 +97,23 @@ public class FansController extends BaseInfoProperties {
 		
 		return GraceJSONResult.ok();
 	}
+	
+	
+	@PostMapping("queryFollowVloger")
+	public GraceJSONResult queryFollowVloger(
+			@RequestBody @Valid FollowVlogerForm form
+			) {
+		
+		if (form.getMyId().equalsIgnoreCase(form.getVlogerId())) {
+			return GraceJSONResult.errorCustom(ResponseStatusEnum.SYSTEM_RESPONSE_NO_INFO);
+		}
+		// query follow status from db
+		// boolean check = fansService.queryDoIFollowVloger(form.getMyId(), form.getVlogerId());
+		
+		// query follow statu from redis
+		String checkStr = redis.get(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + form.getMyId() + ":" + form.getVlogerId());
+		boolean check2 = checkStr != null;
+		
+		return GraceJSONResult.ok(check2);
+	}
 }
