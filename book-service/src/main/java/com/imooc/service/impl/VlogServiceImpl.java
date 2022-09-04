@@ -18,10 +18,14 @@ import com.imooc.bo.VlogBO;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.VlogMapper;
 import com.imooc.mapper.VlogMapperCustom;
+import com.imooc.pojo.Users;
 import com.imooc.pojo.Vlog;
 import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.IndexVlogVO;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
 public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
@@ -81,6 +85,20 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 			return list.get(0);
 		}
 		return null;
+	}
+
+	@Transactional
+	@Override
+	public void changeToPrivateOrPublic(String userId, String vlogId, Integer yesOrNo) {
+		Example vlogExample = new Example(Vlog.class);
+		Criteria criteria = vlogExample.createCriteria();
+		criteria.andEqualTo("vlogerId", userId);
+		criteria.andEqualTo("id", vlogId);
+		
+		Vlog pendingVlog = new Vlog();
+		pendingVlog.setIsPrivate(yesOrNo);
+		
+		vlogMapper.updateByExampleSelective(pendingVlog, vlogExample);
 	}
 
 	

@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.imooc.bo.VlogBO;
 import com.imooc.controller.form.PublishVlogForm;
+import com.imooc.controller.form.UpdateVlogPrivateOrPublicForm;
 import com.imooc.controller.form.VlogDetailForm;
 import com.imooc.controller.form.VlogIndexListForm;
+import com.imooc.enums.YesOrNo;
 import com.imooc.grace.result.GraceJSONResult;
 import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
@@ -68,5 +70,19 @@ public class VlogController extends BaseInfoProperties {
 				
 		IndexVlogVO vlogBO = vlogService.getVlogDetailById(form.getVlogId());
 		return GraceJSONResult.ok(vlogBO);
+	}
+	
+	@PostMapping("changeToPrivateOrPublic")
+	public GraceJSONResult changeToPrivateOrPublic(
+			@RequestBody @Valid UpdateVlogPrivateOrPublicForm form
+			) {
+		
+		String userId = form.getUserId();
+		String vlogId = form.getVlogId();
+		String yesOrNo = form.getYesOrNo();
+		Integer yesOrNoInt = YesOrNo.valueOf(yesOrNo).type;
+		
+		vlogService.changeToPrivateOrPublic(userId, vlogId, yesOrNoInt);
+		return GraceJSONResult.ok();
 	}
 }

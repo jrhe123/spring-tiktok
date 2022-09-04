@@ -28,4 +28,13 @@ public interface VlogService {
 	public IndexVlogVO getVlogDetailById(
 			String vlogId
 			);
+	
+	/*
+	 * toggle vlog private
+	 */
+	public void changeToPrivateOrPublic(
+			String userId,
+			String vlogId,
+			Integer yesOrNo
+			);
 }
