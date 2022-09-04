@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.m;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,10 @@ import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.VlogBO;
 import com.imooc.enums.YesOrNo;
+import com.imooc.mapper.MyLikedVlogMapper;
 import com.imooc.mapper.VlogMapper;
 import com.imooc.mapper.VlogMapperCustom;
+import com.imooc.pojo.MyLikedVlog;
 import com.imooc.pojo.Users;
 import com.imooc.pojo.Vlog;
 import com.imooc.service.VlogService;
@@ -35,6 +38,9 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 	
 	@Autowired
 	private VlogMapperCustom vlogMapperCustom;
+	
+	@Autowired
+	private MyLikedVlogMapper myLikedVlogMapper;
 	
 	@Autowired
 	private Sid sid;
@@ -114,6 +120,24 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 		List<Vlog> list = vlogMapper.selectByExample(vlogExample);
 		
 		return setterPagedGrid(list, page);
+	}
+
+	@Transactional
+	@Override
+	public void userLikeVlog(String userId, String vlogId) {
+		String id = sid.nextShort();
+		MyLikedVlog myLikedVlog = new MyLikedVlog();
+		myLikedVlog.setId(id);
+		myLikedVlog.setUserId(userId);
+		myLikedVlog.setVlogId(vlogId);
+		
+		myLikedVlogMapper.insert(myLikedVlog);
+	}
+
+	@Override
+	public Vlog queryVlogID(String vlogId) {
+		Vlog vlog = vlogMapper.selectByPrimaryKey(vlogId);
+		return vlog;
 	}
 
 	

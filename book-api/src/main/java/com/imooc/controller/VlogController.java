@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.imooc.bo.VlogBO;
+import com.imooc.controller.form.LikeVlogForm;
 import com.imooc.controller.form.PublishVlogForm;
 import com.imooc.controller.form.QueryMyVlogListForm;
 import com.imooc.controller.form.UpdateVlogPrivateOrPublicForm;
@@ -104,5 +105,28 @@ public class VlogController extends BaseInfoProperties {
 				page,
 				pageSize);
 		return GraceJSONResult.ok(result);
+	}
+	
+	@PostMapping("like")
+	public GraceJSONResult like(
+			@RequestBody @Valid LikeVlogForm form
+			) {
+		
+		String userId = form.getUserId();
+		String vlogerId = form.getVlogerId();
+		String vlogId = form.getVlogId();
+		
+		// service
+		vlogService.userLikeVlog(userId, vlogId);
+		
+		// redis:
+		// likes + 1: vlog & vloger
+		redis.increment(REDIS_VLOGER_BE_LIKED_COUNTS + ":" + vlogerId, 1);
+		redis.increment(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId, 1);
+		
+		// my like video save in redis
+		redis.set(REDIS_USER_LIKE_VLOG + ":" + userId + ":" + vlogId, "1");
+		
+		return GraceJSONResult.ok();
 	}
 }

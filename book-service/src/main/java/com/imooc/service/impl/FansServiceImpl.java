@@ -126,6 +126,21 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 		map.put("myId", myId);
 				
 		List<FansVO> list = fansMapperCustom.queryMyFans(map);
+		
+		// check redis for follow status
+		for (FansVO f : list) {
+			String relation = redis.get(
+					REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" 
+							+ myId + ":" + f.getFanId()
+				);
+			if (
+					relation != null &&
+					StringUtils.isNoneBlank(relation) &&
+					relation.equalsIgnoreCase("1")
+				) {
+				f.setFriend(true);
+			}
+		}
 				
 		return setterPagedGrid(list, page);
 	}
