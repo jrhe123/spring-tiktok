@@ -17,6 +17,7 @@ import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.VlogBO;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.FansMapper;
+import com.imooc.mapper.FansMapperCustom;
 import com.imooc.mapper.VlogMapper;
 import com.imooc.mapper.VlogMapperCustom;
 import com.imooc.pojo.Fans;
@@ -25,7 +26,9 @@ import com.imooc.pojo.Vlog;
 import com.imooc.service.FansService;
 import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
+import com.imooc.vo.FansVO;
 import com.imooc.vo.IndexVlogVO;
+import com.imooc.vo.VlogerVO;
 
 import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.entity.Example.Criteria;
@@ -35,6 +38,9 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 		
 	@Autowired
 	private FansMapper fansMapper;
+	
+	@Autowired
+	private FansMapperCustom fansMapperCustom;
 	
 	@Autowired
 	private Sid sid;
@@ -95,6 +101,33 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 	public boolean queryDoIFollowVloger(String myId, String vlogerId) {
 		Fans fans = queryFansRelationship(myId, vlogerId);
 		return fans != null;
+	}
+
+	@Override
+	public PagedGridResult queryMyFollows(String myId, Integer page, Integer pageSize) {
+		
+		// intercept: auto add limit, offset to query
+		PageHelper.startPage(page, pageSize);
+				
+		Map<String, Object> map = new HashMap<>();
+		map.put("myId", myId);
+		
+		List<VlogerVO> list = fansMapperCustom.queryMyFollows(map);
+		
+		return setterPagedGrid(list, page);
+	}
+
+	@Override
+	public PagedGridResult queryMyFans(String myId, Integer page, Integer pageSize) {
+		// intercept: auto add limit, offset to query
+		PageHelper.startPage(page, pageSize);
+						
+		Map<String, Object> map = new HashMap<>();
+		map.put("myId", myId);
+				
+		List<FansVO> list = fansMapperCustom.queryMyFans(map);
+				
+		return setterPagedGrid(list, page);
 	}
 
 	

@@ -16,6 +16,7 @@ import com.imooc.bo.VlogBO;
 import com.imooc.controller.form.FollowVlogerForm;
 import com.imooc.controller.form.PublishVlogForm;
 import com.imooc.controller.form.QueryMyVlogListForm;
+import com.imooc.controller.form.QueryFollowForm;
 import com.imooc.controller.form.UpdateVlogPrivateOrPublicForm;
 import com.imooc.controller.form.VlogDetailForm;
 import com.imooc.controller.form.VlogIndexListForm;
@@ -110,10 +111,42 @@ public class FansController extends BaseInfoProperties {
 		// query follow status from db
 		// boolean check = fansService.queryDoIFollowVloger(form.getMyId(), form.getVlogerId());
 		
-		// query follow statu from redis
+		// query follow status from redis
 		String checkStr = redis.get(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + form.getMyId() + ":" + form.getVlogerId());
 		boolean check2 = checkStr != null;
 		
 		return GraceJSONResult.ok(check2);
+	}
+	
+	@PostMapping("queryMyFollows")
+	public GraceJSONResult queryMyFollows(
+			@RequestBody @Valid QueryFollowForm form
+			) {
+		String myId = form.getMyId();
+		Integer page = form.getPage();
+		Integer pageSize = form.getPageSize();
+				
+		PagedGridResult result = fansService.queryMyFollows(
+				myId,
+				page,
+				pageSize
+			);
+		return GraceJSONResult.ok(result);
+	}
+	
+	@PostMapping("queryMyFans")
+	public GraceJSONResult queryMyFans(
+			@RequestBody @Valid QueryFollowForm form
+			) {
+		String myId = form.getMyId();
+		Integer page = form.getPage();
+		Integer pageSize = form.getPageSize();
+				
+		PagedGridResult result = fansService.queryMyFans(
+				myId,
+				page,
+				pageSize
+			);
+		return GraceJSONResult.ok(result);
 	}
 }
