@@ -19,12 +19,14 @@ https://blog.clairvoyantsoft.com/spring-boot-creating-a-custom-annotation-for-va
 
 centos:
 root
-hejiarong
+this_is_your_name
 
 minIO
 
 service docker start
 docker start minio
+
+http://127.0.0.1:9001/buckets/tiktok/browse
 
 fix server datetime error:
 (minio The difference between the request time and the server's time is too large.)
@@ -33,3 +35,6 @@ https://www.jianshu.com/p/6ccfffd4402f
 
 open file:
 cmd + shift + r
+
+clean up import:
+cmd + 1
