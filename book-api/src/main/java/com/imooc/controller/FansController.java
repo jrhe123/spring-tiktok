@@ -70,4 +70,31 @@ public class FansController extends BaseInfoProperties {
 	}
 	
 	
+	@PostMapping("cancel")
+	public GraceJSONResult cancel(
+			@RequestBody @Valid FollowVlogerForm form
+			) {
+		
+		if (form.getMyId().equalsIgnoreCase(form.getVlogerId())) {
+			return GraceJSONResult.errorCustom(ResponseStatusEnum.SYSTEM_RESPONSE_NO_INFO);
+		}
+		// cancel follow
+		fansService.doCancel(form.getMyId(), form.getVlogerId());
+		
+		// vloger fans - 1, my follows 1 1
+		redis.decrement(
+				REDIS_MY_FANS_COUNTS + ":" + form.getVlogerId(),
+				1
+			);
+		redis.decrement(
+				REDIS_MY_FOLLOWS_COUNTS + ":" + form.getMyId(), 
+				1
+			);
+		// fans relation remove from redis
+		redis.del(
+				REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + form.getMyId() + ":" + form.getVlogerId()
+			);
+		
+		return GraceJSONResult.ok();
+	}
 }

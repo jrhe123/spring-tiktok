@@ -39,6 +39,7 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 	@Autowired
 	private Sid sid;
 
+	@Transactional
 	@Override
 	public void doFollow(String myId, String vlogerId) {
 		String id = sid.nextShort();
@@ -73,6 +74,21 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 			fan = list.get(0);
 		}
 		return fan;
+	}
+
+	@Transactional
+	@Override
+	public void doCancel(String myId, String vlogerId) {
+		// 1. check friend relation
+		Fans fans = queryFansRelationship(myId, vlogerId);
+		if (fans != null && fans.getIsFanFriendOfMine().equals(YesOrNo.YES.type)) {
+			// 2. remove friend from vloger relation
+			Fans pendingFans = queryFansRelationship(vlogerId, myId);
+			pendingFans.setIsFanFriendOfMine(YesOrNo.NO.type);
+			fansMapper.updateByPrimaryKeySelective(pendingFans);
+		}
+		// 3. delete my relation
+		fansMapper.delete(fans);
 	}
 
 	
