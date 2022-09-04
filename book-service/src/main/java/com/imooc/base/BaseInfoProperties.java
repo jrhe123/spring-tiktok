@@ -1,4 +1,4 @@
-package com.imooc.controller;
+package com.imooc.base;
 
 import java.util.HashMap;
 import java.util.List;
