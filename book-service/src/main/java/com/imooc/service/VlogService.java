@@ -37,4 +37,14 @@ public interface VlogService {
 			String vlogId,
 			Integer yesOrNo
 			);
+	
+	/*
+	 * query my vlog list (private / public)
+	 */
+	public PagedGridResult queryMyVlogList(
+			String userId,
+			Integer yesOrNo,
+			Integer page,
+			Integer pageSize
+			);
 }
