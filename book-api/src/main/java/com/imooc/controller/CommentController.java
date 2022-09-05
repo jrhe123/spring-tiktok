@@ -17,6 +17,7 @@ import com.imooc.bo.CommentBO;
 import com.imooc.controller.form.CommentForm;
 import com.imooc.controller.form.DeleteCommentForm;
 import com.imooc.controller.form.FollowVlogerForm;
+import com.imooc.controller.form.LikeCommentForm;
 import com.imooc.controller.form.QueryCommentListForm;
 import com.imooc.controller.form.QueryVlogCountForm;
 import com.imooc.grace.result.GraceJSONResult;
@@ -87,6 +88,35 @@ public class CommentController extends BaseInfoProperties{
 				commentId,
 				vlogId
 			);
+			
+		return GraceJSONResult.ok();
+	}
+	
+	@PostMapping("like")
+	public GraceJSONResult like(
+			@RequestBody @Valid LikeCommentForm form
+			) {
+		
+		String userId = form.getUserId();
+		String commentId = form.getCommentId();
+		
+		// big key issue
+		redis.incrementHash(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId, 1);
+		redis.setHashValue(REDIS_USER_LIKE_COMMENT, userId, "1");	
+		
+		return GraceJSONResult.ok();
+	}
+	
+	@PostMapping("unlike")
+	public GraceJSONResult unlike(
+			@RequestBody @Valid LikeCommentForm form
+			) {
+		
+		String userId = form.getUserId();
+		String commentId = form.getCommentId();
+		
+		redis.decrementHash(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId, 1);
+		redis.hdel(REDIS_USER_LIKE_COMMENT, userId);	
 			
 		return GraceJSONResult.ok();
 	}
