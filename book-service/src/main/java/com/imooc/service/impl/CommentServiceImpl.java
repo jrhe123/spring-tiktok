@@ -16,6 +16,7 @@ import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.CommentBO;
 import com.imooc.bo.VlogBO;
+import com.imooc.enums.MessageEnum;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.CommentMapper;
 import com.imooc.mapper.CommentMapperCustom;
@@ -29,6 +30,7 @@ import com.imooc.pojo.Users;
 import com.imooc.pojo.Vlog;
 import com.imooc.service.CommentService;
 import com.imooc.service.FansService;
+import com.imooc.service.MsgService;
 import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.CommentVO;
@@ -47,6 +49,12 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 	
 	@Autowired
 	private CommentMapperCustom commentMapperCustom;
+	
+	@Autowired
+	private MsgService msgService;
+	
+	@Autowired
+	private VlogService vlogService;
 	
 	@Autowired
 	private Sid sid;
@@ -73,7 +81,28 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 				1
 			);
 		
-		// 
+		// system message (comment / reply)
+		Integer msgType = MessageEnum.COMMENT_VLOG.type;
+		if (StringUtils.isNotBlank(commentBO.getFatherCommentId()) &&
+				!commentBO.getFatherCommentId().equalsIgnoreCase("0")) {
+			msgType = MessageEnum.REPLY_YOU.type;
+		}
+		// msgContent
+		Vlog vlog = vlogService.queryVlogID(commentBO.getVlogId());
+		Map msgContent = new HashMap(); 
+		msgContent.put("vlogId", commentBO.getVlogId());
+		msgContent.put("vlogCover", vlog.getCover());
+		msgContent.put("commentId", id);
+		msgContent.put("commentContent", commentBO.getContent());
+		
+		msgService.createMsg(
+				commentBO.getCommentUserId(),
+				commentBO.getVlogerId(),
+				msgType,
+				msgContent
+			);
+		
+		// return vo
 		CommentVO commentVO = new CommentVO();
 		BeanUtils.copyProperties(comment, commentVO);
 		return commentVO;

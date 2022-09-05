@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.VlogBO;
+import com.imooc.enums.MessageEnum;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.MyLikedVlogMapper;
 import com.imooc.mapper.VlogMapper;
@@ -24,6 +25,7 @@ import com.imooc.pojo.MyLikedVlog;
 import com.imooc.pojo.Users;
 import com.imooc.pojo.Vlog;
 import com.imooc.service.FansService;
+import com.imooc.service.MsgService;
 import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.IndexVlogVO;
@@ -45,6 +47,9 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 	
 	@Autowired
 	private FansService fansService;
+	
+	@Autowired
+	private MsgService msgService;
 	
 	@Autowired
 	private Sid sid;
@@ -187,6 +192,18 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 		myLikedVlog.setVlogId(vlogId);
 		
 		myLikedVlogMapper.insert(myLikedVlog);
+		
+		// system message
+		Vlog vlog = queryVlogID(vlogId);
+		Map msgContent = new HashMap(); 
+		msgContent.put("vlogId", vlogId);
+		msgContent.put("vlogCover", vlog.getCover());
+		msgService.createMsg(
+				userId,
+				vlog.getVlogerId(),
+				MessageEnum.LIKE_VLOG.type,
+				msgContent
+			);
 	}
 	
 	@Transactional

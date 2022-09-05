@@ -17,7 +17,7 @@ public interface CommentService {
 	public CommentVO createComment(CommentBO commentBO);
 	
 	public Comment queryCommentID(String commentId);
-	
+		
 	public PagedGridResult queryVlogComments(
 			String vlogId,
 			String userId,

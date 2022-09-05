@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.VlogBO;
+import com.imooc.enums.MessageEnum;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.FansMapper;
 import com.imooc.mapper.FansMapperCustom;
@@ -24,6 +25,7 @@ import com.imooc.pojo.Fans;
 import com.imooc.pojo.Users;
 import com.imooc.pojo.Vlog;
 import com.imooc.service.FansService;
+import com.imooc.service.MsgService;
 import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.FansVO;
@@ -41,6 +43,9 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 	
 	@Autowired
 	private FansMapperCustom fansMapperCustom;
+	
+	@Autowired
+	private MsgService msgService;
 	
 	@Autowired
 	private Sid sid;
@@ -66,6 +71,14 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 			fans.setIsFanFriendOfMine(YesOrNo.NO.type);
 		}
 		fansMapper.insert(fans);
+		
+		// system message
+		msgService.createMsg(
+				myId,
+				vlogerId,
+				MessageEnum.FOLLOW_YOU.type,
+				null
+			);
 	}
 	
 	public Fans queryFansRelationship(String fanId, String vlogerId) {

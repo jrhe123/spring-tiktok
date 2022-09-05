@@ -1,6 +1,8 @@
 package com.imooc.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -20,8 +22,13 @@ import com.imooc.controller.form.FollowVlogerForm;
 import com.imooc.controller.form.LikeCommentForm;
 import com.imooc.controller.form.QueryCommentListForm;
 import com.imooc.controller.form.QueryVlogCountForm;
+import com.imooc.enums.MessageEnum;
 import com.imooc.grace.result.GraceJSONResult;
+import com.imooc.pojo.Comment;
+import com.imooc.pojo.Vlog;
 import com.imooc.service.CommentService;
+import com.imooc.service.MsgService;
+import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.utils.SMSUtils;
 import com.imooc.vo.CommentVO;
@@ -37,6 +44,12 @@ public class CommentController extends BaseInfoProperties{
 
 	@Autowired
 	private CommentService commentService;
+	
+	@Autowired
+	private MsgService msgService;
+	
+	@Autowired
+	private VlogService vlogService;
 	
 	@PostMapping("create")
 	public GraceJSONResult create(
@@ -104,6 +117,24 @@ public class CommentController extends BaseInfoProperties{
 		// big key issue
 		redis.incrementHash(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId, 1);
 		redis.setHashValue(REDIS_USER_LIKE_COMMENT, userId + ":" + commentId, "1");	
+		
+		// system message
+		Integer msgType = MessageEnum.LIKE_COMMENT.type;
+		// msgContent
+		Comment comment = commentService.queryCommentID(commentId);
+		Vlog vlog = vlogService.queryVlogID(comment.getVlogId());
+		Map msgContent = new HashMap();
+		msgContent.put("vlogId", comment.getVlogId());
+		msgContent.put("vlogCover", vlog.getCover());
+		msgContent.put("commentId", commentId);
+
+		msgService.createMsg(
+				userId,
+				comment.getCommentUserId(),
+				msgType,
+				msgContent
+			);
+		
 		
 		return GraceJSONResult.ok();
 	}
