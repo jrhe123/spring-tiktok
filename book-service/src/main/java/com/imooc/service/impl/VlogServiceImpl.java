@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.units.qual.m;
 import org.n3r.idworker.Sid;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,18 +16,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
+import com.imooc.base.MQConfig;
 import com.imooc.bo.VlogBO;
 import com.imooc.enums.MessageEnum;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.MyLikedVlogMapper;
 import com.imooc.mapper.VlogMapper;
 import com.imooc.mapper.VlogMapperCustom;
+import com.imooc.mo.MessageMO;
 import com.imooc.pojo.MyLikedVlog;
 import com.imooc.pojo.Users;
 import com.imooc.pojo.Vlog;
 import com.imooc.service.FansService;
 import com.imooc.service.MsgService;
 import com.imooc.service.VlogService;
+import com.imooc.utils.JsonUtils;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.IndexVlogVO;
 
@@ -50,6 +54,9 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 	
 	@Autowired
 	private MsgService msgService;
+	
+	@Autowired
+	private RabbitTemplate rabbitTemplate;
 	
 	@Autowired
 	private Sid sid;
@@ -198,12 +205,21 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 		Map msgContent = new HashMap(); 
 		msgContent.put("vlogId", vlogId);
 		msgContent.put("vlogCover", vlog.getCover());
-		msgService.createMsg(
-				userId,
-				vlog.getVlogerId(),
-				MessageEnum.LIKE_VLOG.type,
-				msgContent
-			);
+//		msgService.createMsg(
+//				userId,
+//				vlog.getVlogerId(),
+//				MessageEnum.LIKE_VLOG.type,
+//				msgContent
+//			);
+		MessageMO messageMO = new MessageMO();
+		messageMO.setFromUserId(userId);
+		messageMO.setToUserId(vlog.getVlogerId());
+		messageMO.setMsgContent(msgContent);
+		rabbitTemplate.convertAndSend(
+				MQConfig.EXCHANGE_MSG,
+				"sys.msg." + MessageEnum.LIKE_VLOG.type,
+				JsonUtils.objectToJson(messageMO)
+				);
 	}
 	
 	@Transactional
@@ -217,11 +233,19 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 		
 		// delete system message
 		Vlog vlog = queryVlogID(vlogId);
-		msgService.deleteMsg(
-				userId,
-				vlog.getVlogerId(),
-				MessageEnum.LIKE_VLOG.type
-			);
+//		msgService.deleteMsg(
+//				userId,
+//				vlog.getVlogerId(),
+//				MessageEnum.LIKE_VLOG.type
+//			);
+		MessageMO messageMO = new MessageMO();
+		messageMO.setFromUserId(userId);
+		messageMO.setToUserId(vlog.getVlogerId());
+		rabbitTemplate.convertAndSend(
+				MQConfig.EXCHANGE_MSG,
+				"sys.msg.del" + MessageEnum.LIKE_VLOG.type,
+				JsonUtils.objectToJson(messageMO)
+				);
 	}
 
 	@Override

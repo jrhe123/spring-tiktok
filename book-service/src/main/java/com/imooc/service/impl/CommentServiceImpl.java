@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
+import com.imooc.base.MQConfig;
 import com.imooc.bo.CommentBO;
 import com.imooc.bo.VlogBO;
 import com.imooc.enums.MessageEnum;
@@ -24,6 +26,7 @@ import com.imooc.mapper.FansMapper;
 import com.imooc.mapper.FansMapperCustom;
 import com.imooc.mapper.VlogMapper;
 import com.imooc.mapper.VlogMapperCustom;
+import com.imooc.mo.MessageMO;
 import com.imooc.pojo.Comment;
 import com.imooc.pojo.Fans;
 import com.imooc.pojo.Users;
@@ -32,6 +35,7 @@ import com.imooc.service.CommentService;
 import com.imooc.service.FansService;
 import com.imooc.service.MsgService;
 import com.imooc.service.VlogService;
+import com.imooc.utils.JsonUtils;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.CommentVO;
 import com.imooc.vo.FansVO;
@@ -55,6 +59,9 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 	
 	@Autowired
 	private VlogService vlogService;
+	
+	@Autowired
+	private RabbitTemplate rabbitTemplate;
 	
 	@Autowired
 	private Sid sid;
@@ -95,12 +102,21 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 		msgContent.put("commentId", id);
 		msgContent.put("commentContent", commentBO.getContent());
 		
-		msgService.createMsg(
-				commentBO.getCommentUserId(),
-				commentBO.getVlogerId(),
-				msgType,
-				msgContent
-			);
+//		msgService.createMsg(
+//				commentBO.getCommentUserId(),
+//				commentBO.getVlogerId(),
+//				msgType,
+//				msgContent
+//			);
+		MessageMO messageMO = new MessageMO();
+		messageMO.setFromUserId(commentBO.getCommentUserId());
+		messageMO.setToUserId(commentBO.getVlogerId());
+		messageMO.setMsgContent(msgContent);
+		rabbitTemplate.convertAndSend(
+				MQConfig.EXCHANGE_MSG,
+				"sys.msg." + msgType,
+				JsonUtils.objectToJson(messageMO)
+				);
 		
 		// return vo
 		CommentVO commentVO = new CommentVO();
@@ -164,11 +180,19 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 				!comment.getFatherCommentId().equalsIgnoreCase("0")) {
 			msgType = MessageEnum.REPLY_YOU.type;
 		}
-		msgService.deleteMsg(
-				comment.getCommentUserId(),
-				comment.getVlogerId(),
-				msgType
-			);
+//		msgService.deleteMsg(
+//				comment.getCommentUserId(),
+//				comment.getVlogerId(),
+//				msgType
+//			);
+		MessageMO messageMO = new MessageMO();
+		messageMO.setFromUserId(comment.getCommentUserId());
+		messageMO.setToUserId(comment.getVlogerId());
+		rabbitTemplate.convertAndSend(
+				MQConfig.EXCHANGE_MSG,
+				"sys.msg.del" + msgType,
+				JsonUtils.objectToJson(messageMO)
+				);
 		
 		// delete db
 		Comment pendingComment = new Comment();

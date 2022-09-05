@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
+import com.imooc.base.MQConfig;
 import com.imooc.bo.VlogBO;
 import com.imooc.enums.MessageEnum;
 import com.imooc.enums.YesOrNo;
@@ -21,12 +23,14 @@ import com.imooc.mapper.FansMapper;
 import com.imooc.mapper.FansMapperCustom;
 import com.imooc.mapper.VlogMapper;
 import com.imooc.mapper.VlogMapperCustom;
+import com.imooc.mo.MessageMO;
 import com.imooc.pojo.Fans;
 import com.imooc.pojo.Users;
 import com.imooc.pojo.Vlog;
 import com.imooc.service.FansService;
 import com.imooc.service.MsgService;
 import com.imooc.service.VlogService;
+import com.imooc.utils.JsonUtils;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.FansVO;
 import com.imooc.vo.IndexVlogVO;
@@ -46,6 +50,9 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 	
 	@Autowired
 	private MsgService msgService;
+	
+	@Autowired
+	private RabbitTemplate rabbitTemplate;
 	
 	@Autowired
 	private Sid sid;
@@ -73,12 +80,20 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 		fansMapper.insert(fans);
 		
 		// system message
-		msgService.createMsg(
-				myId,
-				vlogerId,
-				MessageEnum.FOLLOW_YOU.type,
-				null
-			);
+//		msgService.createMsg(
+//				myId,
+//				vlogerId,
+//				MessageEnum.FOLLOW_YOU.type,
+//				null
+//			);
+		MessageMO messageMO = new MessageMO();
+		messageMO.setFromUserId(myId);
+		messageMO.setToUserId(vlogerId);
+		rabbitTemplate.convertAndSend(
+				MQConfig.EXCHANGE_MSG,
+				"sys.msg." + MessageEnum.FOLLOW_YOU.type,
+				JsonUtils.objectToJson(messageMO)
+				);
 	}
 	
 	public Fans queryFansRelationship(String fanId, String vlogerId) {
@@ -110,11 +125,19 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 		fansMapper.delete(fans);
 		
 		// delete system message
-		msgService.deleteMsg(
-				myId,
-				vlogerId,
-				MessageEnum.FOLLOW_YOU.type
-			);
+//		msgService.deleteMsg(
+//				myId,
+//				vlogerId,
+//				MessageEnum.FOLLOW_YOU.type
+//			);
+		MessageMO messageMO = new MessageMO();
+		messageMO.setFromUserId(myId);
+		messageMO.setToUserId(vlogerId);
+		rabbitTemplate.convertAndSend(
+				MQConfig.EXCHANGE_MSG,
+				"sys.msg.del" + MessageEnum.FOLLOW_YOU.type,
+				JsonUtils.objectToJson(messageMO)
+				);
 	}
 
 	@Override
