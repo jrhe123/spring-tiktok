@@ -68,6 +68,7 @@ public class CommentController extends BaseInfoProperties{
 			) {
 		PagedGridResult result = commentService.queryVlogComments(
 				form.getVlogId(),
+				form.getUserId(),
 				form.getPage(),
 				form.getPageSize()
 			);
@@ -102,7 +103,7 @@ public class CommentController extends BaseInfoProperties{
 		
 		// big key issue
 		redis.incrementHash(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId, 1);
-		redis.setHashValue(REDIS_USER_LIKE_COMMENT, userId, "1");	
+		redis.setHashValue(REDIS_USER_LIKE_COMMENT, userId + ":" + commentId, "1");	
 		
 		return GraceJSONResult.ok();
 	}
@@ -116,7 +117,7 @@ public class CommentController extends BaseInfoProperties{
 		String commentId = form.getCommentId();
 		
 		redis.decrementHash(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId, 1);
-		redis.hdel(REDIS_USER_LIKE_COMMENT, userId);	
+		redis.hdel(REDIS_USER_LIKE_COMMENT, userId + ":" + commentId);	
 			
 		return GraceJSONResult.ok();
 	}

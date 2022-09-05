@@ -20,6 +20,7 @@ public interface CommentService {
 	
 	public PagedGridResult queryVlogComments(
 			String vlogId,
+			String userId,
 			Integer page,
 			Integer pageSize
 			);

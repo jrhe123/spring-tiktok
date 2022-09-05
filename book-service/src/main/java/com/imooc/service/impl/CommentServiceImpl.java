@@ -88,6 +88,7 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 	@Override
 	public PagedGridResult queryVlogComments(
 			String vlogId,
+			String userId,
 			Integer page,
 			Integer pageSize
 		) {
@@ -99,6 +100,24 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 
 		List<CommentVO> list = commentMapperCustom.getCommentList(map);
 
+		for (CommentVO c : list) {
+			String commentId = c.getCommentId();
+			
+			// total count
+			String countStr = redis.getHashValue(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId);
+			if (StringUtils.isBlank(countStr)) {
+				countStr = "0";
+			}
+			Integer counts = Integer.valueOf(countStr);
+			c.setLikeCounts(counts);
+			
+			// do i like
+			String doILike = redis.getHashValue(REDIS_USER_LIKE_COMMENT, userId + ":" + commentId);
+			if (StringUtils.isNotBlank(doILike) && doILike.equalsIgnoreCase("1")) {
+				c.setIsLike(YesOrNo.YES.type);
+			}
+		}
+		
 		return setterPagedGrid(list, page);
 	}
 
