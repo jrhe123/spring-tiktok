@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.imooc.bo.CommentBO;
 import com.imooc.controller.form.CommentForm;
+import com.imooc.controller.form.DeleteCommentForm;
 import com.imooc.controller.form.FollowVlogerForm;
 import com.imooc.controller.form.QueryCommentListForm;
 import com.imooc.controller.form.QueryVlogCountForm;
@@ -70,6 +71,24 @@ public class CommentController extends BaseInfoProperties{
 				form.getPageSize()
 			);
 		return GraceJSONResult.ok(result);
+	}
+	
+	@PostMapping("delete")
+	public GraceJSONResult delete(
+			@RequestBody @Valid DeleteCommentForm form
+			) {
+		
+		String commentId = form.getCommentId();
+		String commentUserId = form.getCommentUserId();
+		String vlogId = form.getVlogId();
+		
+		commentService.deleteComment(
+				commentUserId,
+				commentId,
+				vlogId
+			);
+			
+		return GraceJSONResult.ok();
 	}
 
 }

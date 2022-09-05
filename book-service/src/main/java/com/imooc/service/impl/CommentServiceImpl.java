@@ -45,7 +45,6 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 	@Autowired
 	private CommentMapper commentMapper;
 	
-	
 	@Autowired
 	private CommentMapperCustom commentMapperCustom;
 	
@@ -101,6 +100,27 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 		List<CommentVO> list = commentMapperCustom.getCommentList(map);
 
 		return setterPagedGrid(list, page);
+	}
+
+	@Override
+	public void deleteComment(
+			String commentUserId,
+			String commentId,
+			String vlogId
+		) {
+		
+		Comment pendingComment = new Comment();
+		pendingComment.setId(commentId);
+		pendingComment.setCommentUserId(commentUserId);
+		pendingComment.setVlogId(vlogId);
+		
+		commentMapper.delete(pendingComment);
+		
+		// redis
+		redis.decrement(
+				REDIS_VLOG_COMMENT_COUNTS + ":" + vlogId, 
+				1
+			);
 	};
 
 

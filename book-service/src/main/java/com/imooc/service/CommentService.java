@@ -23,4 +23,10 @@ public interface CommentService {
 			Integer page,
 			Integer pageSize
 			);
+	
+	public void deleteComment(
+			String commentUserId,
+			String commentId,
+			String vlogId
+			);
 }
