@@ -64,6 +64,7 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 
 	@Override
 	public PagedGridResult getIndexVlogList(
+			String userId,
 			String search,
 			Integer page,
 			Integer pageSize
@@ -77,7 +78,24 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 		}
 		
 		List<IndexVlogVO> list = vlogMapperCustom.getIndexVlogList(map);
+		
+		// check vlog is liked by user, in redis
+		for (IndexVlogVO v : list) {
+			String vlogId = v.getVlogId();
+			boolean isLike = doILikeVlog(userId, vlogId);
+			v.setDoILikeThisVlog(isLike);
+		}
+		
 		return setterPagedGrid(list, page);
+	}
+	
+	private boolean doILikeVlog(String myId, String vlogId) {
+		String doILike = redis.get(REDIS_USER_LIKE_VLOG + ":" + myId + ":" + vlogId);
+		boolean isLike = false;
+		if (StringUtils.isNotBlank(doILike) && doILike.equalsIgnoreCase("1")) {
+			isLike = true;
+		}
+		return isLike;
 	}
 
 	@Override
@@ -133,12 +151,24 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 		
 		myLikedVlogMapper.insert(myLikedVlog);
 	}
+	
+	@Transactional
+	@Override
+	public void userUnLikeVlog(String userId, String vlogId) {
+		MyLikedVlog myLikedVlog = new MyLikedVlog();
+		myLikedVlog.setUserId(userId);
+		myLikedVlog.setVlogId(vlogId);
+		
+		myLikedVlogMapper.delete(myLikedVlog);
+	}
 
 	@Override
 	public Vlog queryVlogID(String vlogId) {
 		Vlog vlog = vlogMapper.selectByPrimaryKey(vlogId);
 		return vlog;
 	}
+
+
 
 	
 	

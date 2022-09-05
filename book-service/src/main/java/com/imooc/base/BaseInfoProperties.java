@@ -25,6 +25,7 @@ public class BaseInfoProperties {
 	public static final String REDIS_VLOGER_BE_LIKED_COUNTS = "redis_vloger_be_liked_counts";
 	
 	public static final String REDIS_FANS_AND_VLOGGER_RELATIONSHIP = "redis_fans_and_vlogger_relationship";
+	public static final String REDIS_USER_LIKE_VLOG = "redis_user_like_vlog";
 	
 	public static final Integer COMMON_START_PAGE = 1;
 	public static final Integer COMMON_PAGE_SIZE = 10;

@@ -102,12 +102,12 @@ public class UserInfoController extends BaseInfoProperties {
 		// store likes in redis & counts
 		String myFollowsCountsStr = redis.get(REDIS_MY_FOLLOWS_COUNTS + ":" + form.getUserId());
 		String myFansCountsStr = redis.get(REDIS_MY_FANS_COUNTS + ":" + form.getUserId());
-		String myLikedVlogCountsStr = redis.get(REDIS_VLOG_BE_LIKED_COUNTS + ":" + form.getUserId());
+		// String myLikedVlogCountsStr = redis.get(REDIS_VLOG_BE_LIKED_COUNTS + ":" + form.getUserId());
 		String myLikedVlogerCountsStr = redis.get(REDIS_VLOGER_BE_LIKED_COUNTS + ":" + form.getUserId());
 		
 		Integer myFollowsCounts = 0;
 		Integer myFansCounts = 0;
-		Integer myLikedVlogCounts = 0;
+//		Integer myLikedVlogCounts = 0;
 		Integer myLikedVlogerCounts = 0;
 		Integer totalLikeMeCounts = 0;
 		
@@ -117,13 +117,14 @@ public class UserInfoController extends BaseInfoProperties {
 		if (StringUtils.isNotBlank(myFansCountsStr)) {
 			myFansCounts = Integer.valueOf(myFansCountsStr);
 		}
-		if (StringUtils.isNotBlank(myLikedVlogCountsStr)) {
-			myLikedVlogCounts = Integer.valueOf(myLikedVlogCountsStr);
-		}
+//		if (StringUtils.isNotBlank(myLikedVlogCountsStr)) {
+//			myLikedVlogCounts = Integer.valueOf(myLikedVlogCountsStr);
+//		}
 		if (StringUtils.isNotBlank(myLikedVlogerCountsStr)) {
 			myLikedVlogerCounts = Integer.valueOf(myLikedVlogerCountsStr);
 		}
-		totalLikeMeCounts = myLikedVlogCounts + myLikedVlogerCounts;
+//		totalLikeMeCounts = myLikedVlogCounts + myLikedVlogerCounts;
+		totalLikeMeCounts = myLikedVlogerCounts;
 		usersVO.setMyFollowsCounts(myFollowsCounts);
 		usersVO.setMyFansCounts(myFansCounts);
 		usersVO.setTotalLikeMeCounts(totalLikeMeCounts);

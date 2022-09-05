@@ -54,6 +54,7 @@ public class VlogController extends BaseInfoProperties {
 	public GraceJSONResult indexList(
 			@RequestBody @Valid VlogIndexListForm form
 			) {
+		String userId = form.getUserId();	
 		String search = form.getSearch();		
 		if (search == null) {
 			search = "";
@@ -61,7 +62,9 @@ public class VlogController extends BaseInfoProperties {
 		Integer page = form.getPage();
 		Integer pageSize = form.getPageSize();
 				
-		PagedGridResult result = vlogService.getIndexVlogList(search, page, pageSize);
+		PagedGridResult result = vlogService.getIndexVlogList(
+				userId, search, page, pageSize
+			);
 		return GraceJSONResult.ok(result);
 	}
 	
@@ -126,6 +129,29 @@ public class VlogController extends BaseInfoProperties {
 		
 		// my like video save in redis
 		redis.set(REDIS_USER_LIKE_VLOG + ":" + userId + ":" + vlogId, "1");
+		
+		return GraceJSONResult.ok();
+	}
+	
+	@PostMapping("unlike")
+	public GraceJSONResult unlike(
+			@RequestBody @Valid LikeVlogForm form
+			) {
+		
+		String userId = form.getUserId();
+		String vlogerId = form.getVlogerId();
+		String vlogId = form.getVlogId();
+		
+		// service
+		vlogService.userUnLikeVlog(userId, vlogId);
+		
+		// redis:
+		// likes + 1: vlog & vloger
+		redis.decrement(REDIS_VLOGER_BE_LIKED_COUNTS + ":" + vlogerId, 1);
+		redis.decrement(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId, 1);
+		
+		// my like video save in redis
+		redis.del(REDIS_USER_LIKE_VLOG + ":" + userId + ":" + vlogId);
 		
 		return GraceJSONResult.ok();
 	}

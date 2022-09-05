@@ -24,6 +24,7 @@ public interface VlogService {
 	 * list vlog by params
 	 */
 	public PagedGridResult getIndexVlogList(
+			String userId,
 			String search,
 			Integer page,
 			Integer pageSizes
@@ -59,6 +60,14 @@ public interface VlogService {
 	 * user like vlog
 	 */
 	public void userLikeVlog(
+			String userId,
+			String vlogId
+			);
+	
+	/*
+	 * user UNlike vlog
+	 */
+	public void userUnLikeVlog(
 			String userId,
 			String vlogId
 			);
