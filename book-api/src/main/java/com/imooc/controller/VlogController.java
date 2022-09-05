@@ -16,6 +16,7 @@ import com.imooc.bo.VlogBO;
 import com.imooc.controller.form.CountVlogLikeForm;
 import com.imooc.controller.form.LikeVlogForm;
 import com.imooc.controller.form.PublishVlogForm;
+import com.imooc.controller.form.QueryFollowListForm;
 import com.imooc.controller.form.QueryMyLikedVlogListForm;
 import com.imooc.controller.form.QueryMyVlogListForm;
 import com.imooc.controller.form.UpdateVlogPrivateOrPublicForm;
@@ -99,6 +100,7 @@ public class VlogController extends BaseInfoProperties {
 			) {
 		
 		String userId = form.getUserId();
+		// my public / private vlog list
 		String yesOrNo = form.getYesOrNo();
 		Integer yesOrNoInt = YesOrNo.valueOf(yesOrNo).type;
 		Integer page = form.getPage();
@@ -123,6 +125,22 @@ public class VlogController extends BaseInfoProperties {
 				
 		PagedGridResult result = vlogService.getMyLikedVlogList(
 				userId,
+				page,
+				pageSize);
+		return GraceJSONResult.ok(result);
+	}
+	
+	@PostMapping("followList")
+	public GraceJSONResult followList(
+			@RequestBody @Valid QueryFollowListForm form
+			) {
+		
+		String myId = form.getMyId();
+		Integer page = form.getPage();
+		Integer pageSize = form.getPageSize();
+				
+		PagedGridResult result = vlogService.getMyFollowVlogList(
+				myId,
 				page,
 				pageSize);
 		return GraceJSONResult.ok(result);

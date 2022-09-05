@@ -23,6 +23,7 @@ import com.imooc.mapper.VlogMapperCustom;
 import com.imooc.pojo.MyLikedVlog;
 import com.imooc.pojo.Users;
 import com.imooc.pojo.Vlog;
+import com.imooc.service.FansService;
 import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.IndexVlogVO;
@@ -41,6 +42,9 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 	
 	@Autowired
 	private MyLikedVlogMapper myLikedVlogMapper;
+	
+	@Autowired
+	private FansService fansService;
 	
 	@Autowired
 	private Sid sid;
@@ -89,6 +93,10 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 			// 2. total count
 			Integer totalLikeCount = getVlogBeLikedCounts(vlogId);
 			v.setLikeCounts(totalLikeCount);
+			
+			// 3. do i follow
+			boolean doIfollow = fansService.queryDoIFollowVloger(userId, v.getVlogerId());
+			v.setDoIFollowVloger(doIfollow);
 		}
 		
 		return setterPagedGrid(list, page);
@@ -191,6 +199,34 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 		map.put("userId", userId);
 				
 		List<IndexVlogVO> list = vlogMapperCustom.getMyLikedVlogList(map);
+		return setterPagedGrid(list, page);
+	}
+
+	@Override
+	public PagedGridResult getMyFollowVlogList(String myId, Integer page, Integer pageSize) {
+		// intercept: auto add limit, offset to query
+		PageHelper.startPage(page, pageSize);
+						
+		Map<String, Object> map = new HashMap<>();
+		map.put("myId", myId);
+						
+		List<IndexVlogVO> list = vlogMapperCustom.getMyFollowVlogList(map);
+		
+		// check vlog is liked by current user, in redis
+		for (IndexVlogVO v : list) {
+			String vlogId = v.getVlogId();
+			// 1. is like or not
+			boolean isLike = doILikeVlog(myId, vlogId);
+			v.setDoILikeThisVlog(isLike);
+					
+			// 2. total count
+			Integer totalLikeCount = getVlogBeLikedCounts(vlogId);
+			v.setLikeCounts(totalLikeCount);
+			
+			// 3. do i follow
+			v.setDoIFollowVloger(true);
+		}
+		
 		return setterPagedGrid(list, page);
 	}
 

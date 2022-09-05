@@ -85,4 +85,13 @@ public interface VlogService {
 			Integer page,
 			Integer pageSize
 			);
+	
+	/*
+	 * my follow vlogger's vlog list
+	 */
+	public PagedGridResult getMyFollowVlogList(
+			String myId,
+			Integer page,
+			Integer pageSize
+			);
 }
