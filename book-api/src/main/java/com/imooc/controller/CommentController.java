@@ -1,5 +1,7 @@
 package com.imooc.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.imooc.bo.CommentBO;
 import com.imooc.controller.form.CommentForm;
 import com.imooc.controller.form.FollowVlogerForm;
+import com.imooc.controller.form.QueryCommentListForm;
 import com.imooc.controller.form.QueryVlogCountForm;
 import com.imooc.grace.result.GraceJSONResult;
 import com.imooc.service.CommentService;
+import com.imooc.utils.PagedGridResult;
 import com.imooc.utils.SMSUtils;
 import com.imooc.vo.CommentVO;
 
@@ -54,6 +58,18 @@ public class CommentController extends BaseInfoProperties{
 			countStr = "0";
 		}
 		return GraceJSONResult.ok(Integer.valueOf(countStr));
+	}
+	
+	@PostMapping("list")
+	public GraceJSONResult list(
+			@RequestBody @Valid QueryCommentListForm form
+			) {
+		PagedGridResult result = commentService.queryVlogComments(
+				form.getVlogId(),
+				form.getPage(),
+				form.getPageSize()
+			);
+		return GraceJSONResult.ok(result);
 	}
 
 }

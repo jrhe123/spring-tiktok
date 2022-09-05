@@ -18,6 +18,7 @@ import com.imooc.bo.CommentBO;
 import com.imooc.bo.VlogBO;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.CommentMapper;
+import com.imooc.mapper.CommentMapperCustom;
 import com.imooc.mapper.FansMapper;
 import com.imooc.mapper.FansMapperCustom;
 import com.imooc.mapper.VlogMapper;
@@ -43,6 +44,10 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 		
 	@Autowired
 	private CommentMapper commentMapper;
+	
+	
+	@Autowired
+	private CommentMapperCustom commentMapperCustom;
 	
 	@Autowired
 	private Sid sid;
@@ -79,6 +84,23 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 	public Comment queryCommentID(String commentId) {
 		Comment comment = commentMapper.selectByPrimaryKey(commentId);
 		return comment;
+	}
+
+	@Override
+	public PagedGridResult queryVlogComments(
+			String vlogId,
+			Integer page,
+			Integer pageSize
+		) {
+		// intercept: auto add limit, offset to query
+		PageHelper.startPage(page, pageSize);
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("vlogId", vlogId);
+
+		List<CommentVO> list = commentMapperCustom.getCommentList(map);
+
+		return setterPagedGrid(list, page);
 	};
 
 
