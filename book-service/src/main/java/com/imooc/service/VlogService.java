@@ -76,4 +76,13 @@ public interface VlogService {
 	 * get like counts
 	 */
 	public Integer getVlogBeLikedCounts(String vlogId);
+	
+	/*
+	 * my liked list vlog by params
+	 */
+	public PagedGridResult getMyLikedVlogList(
+			String userId,
+			Integer page,
+			Integer pageSize
+			);
 }

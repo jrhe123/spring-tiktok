@@ -182,6 +182,18 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 		return vlog;
 	}
 
+	@Override
+	public PagedGridResult getMyLikedVlogList(String userId, Integer page, Integer pageSize) {
+		// intercept: auto add limit, offset to query
+		PageHelper.startPage(page, pageSize);
+				
+		Map<String, Object> map = new HashMap<>();
+		map.put("userId", userId);
+				
+		List<IndexVlogVO> list = vlogMapperCustom.getMyLikedVlogList(map);
+		return setterPagedGrid(list, page);
+	}
+
 
 
 	
