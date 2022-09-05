@@ -79,14 +79,28 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 		
 		List<IndexVlogVO> list = vlogMapperCustom.getIndexVlogList(map);
 		
-		// check vlog is liked by user, in redis
+		// check vlog is liked by current user, in redis
 		for (IndexVlogVO v : list) {
 			String vlogId = v.getVlogId();
+			// 1. is like or not
 			boolean isLike = doILikeVlog(userId, vlogId);
 			v.setDoILikeThisVlog(isLike);
+			
+			// 2. total count
+			Integer totalLikeCount = getVlogBeLikedCounts(vlogId);
+			v.setLikeCounts(totalLikeCount);
 		}
 		
 		return setterPagedGrid(list, page);
+	}
+	
+	@Override
+	public Integer getVlogBeLikedCounts(String vlogId) {
+		String countStr = redis.get(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId);
+		if (StringUtils.isBlank(countStr)) {
+			countStr = "0";
+		}
+		return Integer.valueOf(countStr);
 	}
 	
 	private boolean doILikeVlog(String myId, String vlogId) {

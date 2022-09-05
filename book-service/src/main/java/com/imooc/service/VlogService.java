@@ -71,4 +71,9 @@ public interface VlogService {
 			String userId,
 			String vlogId
 			);
+	
+	/*
+	 * get like counts
+	 */
+	public Integer getVlogBeLikedCounts(String vlogId);
 }
