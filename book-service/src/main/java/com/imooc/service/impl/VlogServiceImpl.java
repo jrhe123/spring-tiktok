@@ -95,7 +95,7 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 			v.setLikeCounts(totalLikeCount);
 			
 			// 3. do i follow
-			boolean doIfollow = fansService.queryDoIFollowVloger(userId, v.getVlogerId());
+			boolean doIfollow = fansService.queryDoIFollowVloger(userId, v.getVlogerId());			
 			v.setDoIFollowVloger(doIfollow);
 		}
 		
@@ -121,14 +121,29 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 	}
 
 	@Override
-	public IndexVlogVO getVlogDetailById(String vlogId) {
+	public IndexVlogVO getVlogDetailById(String userId, String vlogId) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("vlogId", vlogId);
 					
 		List<IndexVlogVO> list = vlogMapperCustom.getVlogDetailById(map);
 				
 		if (list != null && list.size() > 0 && !list.isEmpty()) {
-			return list.get(0);
+			
+			IndexVlogVO v = list.get(0);
+			
+			// 1. is like or not
+			boolean isLike = doILikeVlog(userId, vlogId);
+			v.setDoILikeThisVlog(isLike);
+					
+			// 2. total count
+			Integer totalLikeCount = getVlogBeLikedCounts(vlogId);
+			v.setLikeCounts(totalLikeCount);
+			
+			// 3. do i follow
+			v.setDoIFollowVloger(true);
+			
+			
+			return v;
 		}
 		return null;
 	}
@@ -227,6 +242,34 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 			v.setDoIFollowVloger(true);
 		}
 		
+		return setterPagedGrid(list, page);
+	}
+
+	@Override
+	public PagedGridResult getMyFriendVlogList(String myId, Integer page, Integer pageSize) {
+		// intercept: auto add limit, offset to query
+		PageHelper.startPage(page, pageSize);
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("myId", myId);
+
+		List<IndexVlogVO> list = vlogMapperCustom.getMyFriendVlogList(map);
+
+		// check vlog is liked by current user, in redis
+		for (IndexVlogVO v : list) {
+			String vlogId = v.getVlogId();
+			// 1. is like or not
+			boolean isLike = doILikeVlog(myId, vlogId);
+			v.setDoILikeThisVlog(isLike);
+
+			// 2. total count
+			Integer totalLikeCount = getVlogBeLikedCounts(vlogId);
+			v.setLikeCounts(totalLikeCount);
+
+			// 3. do i follow
+			v.setDoIFollowVloger(true);
+		}
+
 		return setterPagedGrid(list, page);
 	}
 

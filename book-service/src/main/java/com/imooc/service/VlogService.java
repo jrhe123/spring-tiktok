@@ -34,6 +34,7 @@ public interface VlogService {
 	 * show vlog detail by id
 	 */
 	public IndexVlogVO getVlogDetailById(
+			String userId,
 			String vlogId
 			);
 	
@@ -90,6 +91,15 @@ public interface VlogService {
 	 * my follow vlogger's vlog list
 	 */
 	public PagedGridResult getMyFollowVlogList(
+			String myId,
+			Integer page,
+			Integer pageSize
+			);
+	
+	/*
+	 * my friend vlogger's vlog list
+	 */
+	public PagedGridResult getMyFriendVlogList(
 			String myId,
 			Integer page,
 			Integer pageSize

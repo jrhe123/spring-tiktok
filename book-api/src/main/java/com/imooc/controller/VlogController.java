@@ -76,7 +76,10 @@ public class VlogController extends BaseInfoProperties {
 			@RequestBody @Valid VlogDetailForm form
 			) {
 				
-		IndexVlogVO vlogBO = vlogService.getVlogDetailById(form.getVlogId());
+		IndexVlogVO vlogBO = vlogService.getVlogDetailById(
+				form.getUserId(),
+				form.getVlogId()
+			);
 		return GraceJSONResult.ok(vlogBO);
 	}
 	
@@ -140,6 +143,22 @@ public class VlogController extends BaseInfoProperties {
 		Integer pageSize = form.getPageSize();
 				
 		PagedGridResult result = vlogService.getMyFollowVlogList(
+				myId,
+				page,
+				pageSize);
+		return GraceJSONResult.ok(result);
+	}
+	
+	@PostMapping("friendList")
+	public GraceJSONResult friendList(
+			@RequestBody @Valid QueryFollowListForm form
+			) {
+		
+		String myId = form.getMyId();
+		Integer page = form.getPage();
+		Integer pageSize = form.getPageSize();
+				
+		PagedGridResult result = vlogService.getMyFriendVlogList(
 				myId,
 				page,
 				pageSize);
