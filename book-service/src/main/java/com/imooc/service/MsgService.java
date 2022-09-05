@@ -12,11 +12,17 @@ public interface MsgService {
 			String toUserId,
 			Integer msgType,
 			Map msgContent
-			);
+		);
 	
 	public List<MessageMO> queryList(
 			String toUserId,
 			Integer page,
 			Integer pageSize
+		);
+	
+	public void deleteMsg(
+			String fromUserId,
+			String toUserId,
+			Integer msgType
 		);
 }

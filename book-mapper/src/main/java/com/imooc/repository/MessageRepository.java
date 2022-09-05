@@ -15,4 +15,10 @@ public interface MessageRepository extends MongoRepository<MessageMO, String> {
 			String toUserId,
 			Pageable pageable
 		);
+	
+	void deleteAllByFromUserIdAndToUserIdAndMsgType(
+			String fromUserId,
+			String toUserId,
+			Integer msgType
+		);
 }

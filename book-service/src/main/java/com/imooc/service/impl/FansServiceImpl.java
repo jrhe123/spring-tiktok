@@ -108,6 +108,13 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 		}
 		// 3. delete my relation
 		fansMapper.delete(fans);
+		
+		// delete system message
+		msgService.deleteMsg(
+				myId,
+				vlogerId,
+				MessageEnum.FOLLOW_YOU.type
+			);
 	}
 
 	@Override

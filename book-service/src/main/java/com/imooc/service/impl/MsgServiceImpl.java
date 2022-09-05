@@ -95,4 +95,17 @@ public class MsgServiceImpl extends BaseInfoProperties implements MsgService {
 		return list;
 	}
 
+	@Override
+	public void deleteMsg(
+			String fromUserId,
+			String toUserId,
+			Integer msgType
+		) {
+		messageRepository.deleteAllByFromUserIdAndToUserIdAndMsgType(
+				fromUserId,
+				toUserId,
+				msgType
+			);
+	}
+
 }

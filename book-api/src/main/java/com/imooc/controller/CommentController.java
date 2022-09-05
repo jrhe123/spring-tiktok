@@ -135,7 +135,6 @@ public class CommentController extends BaseInfoProperties{
 				msgContent
 			);
 		
-		
 		return GraceJSONResult.ok();
 	}
 	
@@ -150,6 +149,15 @@ public class CommentController extends BaseInfoProperties{
 		redis.decrementHash(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId, 1);
 		redis.hdel(REDIS_USER_LIKE_COMMENT, userId + ":" + commentId);	
 			
+		// delete system message
+		Integer msgType = MessageEnum.LIKE_COMMENT.type;
+		Comment comment = commentService.queryCommentID(commentId);
+		msgService.deleteMsg(
+				userId,
+				comment.getCommentUserId(),
+				msgType
+			);
+		
 		return GraceJSONResult.ok();
 	}
 

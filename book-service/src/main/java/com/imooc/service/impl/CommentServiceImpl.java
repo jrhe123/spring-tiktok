@@ -156,7 +156,21 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 			String commentId,
 			String vlogId
 		) {
+				
+		// delete system message
+		Comment comment = queryCommentID(commentId);
+		Integer msgType = MessageEnum.COMMENT_VLOG.type;
+		if (StringUtils.isNotBlank(comment.getFatherCommentId()) &&
+				!comment.getFatherCommentId().equalsIgnoreCase("0")) {
+			msgType = MessageEnum.REPLY_YOU.type;
+		}
+		msgService.deleteMsg(
+				comment.getCommentUserId(),
+				comment.getVlogerId(),
+				msgType
+			);
 		
+		// delete db
 		Comment pendingComment = new Comment();
 		pendingComment.setId(commentId);
 		pendingComment.setCommentUserId(commentUserId);

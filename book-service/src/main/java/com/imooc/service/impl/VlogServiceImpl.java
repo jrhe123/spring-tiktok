@@ -214,6 +214,14 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 		myLikedVlog.setVlogId(vlogId);
 		
 		myLikedVlogMapper.delete(myLikedVlog);
+		
+		// delete system message
+		Vlog vlog = queryVlogID(vlogId);
+		msgService.deleteMsg(
+				userId,
+				vlog.getVlogerId(),
+				MessageEnum.LIKE_VLOG.type
+			);
 	}
 
 	@Override
