@@ -104,4 +104,9 @@ public interface VlogService {
 			Integer page,
 			Integer pageSize
 			);
+	
+	/*
+	 * save redis counts to db
+	 */
+	public void flushCounts(String vlogId, Integer counts);
 }

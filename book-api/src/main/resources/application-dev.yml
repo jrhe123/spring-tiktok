@@ -1,5 +1,5 @@
 server:
-  port: 8099
+  port: ${port:8099}
 
 spring:
   datasource:                                     # 数据源的相关配置
@@ -32,6 +32,17 @@ spring:
     username: guest
     password: guest
     virtual-host: 
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 # nacos addr
+ 
+#monitor nacos
+management:
+  endpoint:
+    web:
+      exposure:
+       include: "*"
 
 # MinIO 配置
 minio:

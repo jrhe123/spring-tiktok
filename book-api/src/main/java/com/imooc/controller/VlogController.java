@@ -4,8 +4,11 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,10 +38,15 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Vlog controller")
 @RestController
 @RequestMapping("vlog")
+@RefreshScope
 public class VlogController extends BaseInfoProperties {
 	
 	@Autowired
     private VlogService vlogService;
+	
+	@Value("${nacos.counts}")
+	private Integer nacosCounts; // define in nacos center
+	
 	
 	@PostMapping("publish")
 	public GraceJSONResult publish(
@@ -184,6 +192,17 @@ public class VlogController extends BaseInfoProperties {
 		
 		// my like video save in redis
 		redis.set(REDIS_USER_LIKE_VLOG + ":" + userId + ":" + vlogId, "1");
+		
+		// detect if like more than 2000, write to db
+		// dynamic detect it from nacos value
+		String countsStr = redis.get(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId);
+		Integer counts = 0;
+		if (StringUtils.isNoneBlank(countsStr)) {
+			counts = Integer.valueOf(countsStr);
+			if (counts >= nacosCounts) {
+				vlogService.flushCounts(vlogId, counts);
+			}
+		}
 		
 		return GraceJSONResult.ok();
 	}
